@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+    <head>
+        <title>When was he fed?</title>
+        <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='style.css') }}>
+    </head>
+    <body>
+        <div id="overall">
+            {% if time_diff < 1 %}
+            <h1>The cat was just fed.</h1>
+            {% elif time_diff < 2 %}
+            <h1>The cat was fed 1 hour ago.</2>
+            {% else %}
+            <h1>The cat was fed {{ time_diff | round }} hours ago.</h1>
+            {% endif %}
+
+            <a href="/record_feed">I fed him again</a>
+        </div>
+    </body>
+</html>

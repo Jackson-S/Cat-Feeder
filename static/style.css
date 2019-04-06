@@ -1,0 +1,22 @@
+body {
+    align-content: center;
+}
+
+h1 {
+    font-family: sans-serif;
+}
+
+a {
+    background-color: #A0A0A0;
+    border:1px solid gainsboro;
+    border-radius:5px;
+    color: #000;
+    margin-right:10px;
+    padding:10px 10px 10px 10px;
+    font-family: sans-serif;
+    text-decoration: none;
+}
+
+#overall {
+    text-align: center;
+}

@@ -112,3 +112,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+cat_feed_times.sql
+.DS_Store
