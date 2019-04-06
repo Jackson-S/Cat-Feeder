@@ -5,7 +5,17 @@ import sqlite3
 app = Flask(__name__)
 database_name = "./cat_feed_times.sql"
 
-@app.route("/record_feed", methods = ['GET'])
+def init_database():
+    db = sqlite3.connect(database_name)
+    db.execute("CREATE TABLE IF NOT EXISTS FeedTimes (Time INTEGER)")
+    db.execute("CREATE TABLE IF NOT EXISTS CheckTimes (Time INTEGER)")
+    db.commit()
+    db.close()
+    return "Success."
+
+init_database()
+
+@app.route("/record_feed", methods = ["GET"])
 def record_feed():
     db = sqlite3.connect(database_name)
     db.execute("INSERT INTO FeedTimes VALUES (datetime('now'))")
@@ -14,7 +24,7 @@ def record_feed():
     return redirect("/")
 
 
-@app.route("/get_last_feed", methods = ['GET'])
+@app.route("/get_last_feed", methods = ["GET"])
 def get_last_feed():
     db = sqlite3.connect(database_name)
     # Log this check
@@ -29,21 +39,30 @@ def get_last_feed():
     return last_time[0]
 
 
-@app.route("/init_database")
-def init_database():
+@app.route("/get_last_feed_string", methods = ["GET"])
+def get_last_feed_string():
     db = sqlite3.connect(database_name)
-    db.execute("CREATE TABLE FeedTimes (Time INTEGER)")
-    db.execute("CREATE TABLE CheckTimes (Time INTEGER)")
-    db.commit()
-    db.close()
-    return "Success."
+    last_time_query = db.execute("""SELECT datetime(Time, 'localtime')
+                                    FROM FeedTimes 
+                                    ORDER BY Time DESC""")
+    last_time = last_time_query.fetchone()[0]
+    last_datetime = datetime.fromisoformat(last_time)
+    
+    # Convert the time difference from seconds to hours
+    time_diff = (datetime.now() - last_datetime).total_seconds() / 3600
+    if time_diff < 1:
+        return "The cat was just fed."
+    elif time_diff < 2:
+        return "The cat was fed 1 hour ago."
+    else:
+        return "The cat was fed {} hours ago.".format(int(round(time_diff)))
 
 
 @app.route("/")
 def index():
     db = sqlite3.connect(database_name)
     # Fetches the time as local time (stored as UTC)
-    last_time_query = db.execute("""SELECT datetime(Time, 'localtime') 
+    last_time_query = db.execute("""SELECT datetime(Time, 'localtime')
                                     FROM FeedTimes 
                                     ORDER BY Time DESC""")
     last_time = last_time_query.fetchone()[0]
@@ -52,7 +71,7 @@ def index():
     # Convert the time difference from seconds to hours
     time_diff = (datetime.now() - last_datetime).total_seconds() / 3600
 
-    return render_template("index.html", time_diff=time_diff)
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

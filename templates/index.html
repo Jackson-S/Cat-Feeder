@@ -3,17 +3,14 @@
     <head>
         <title>When was he fed?</title>
         <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='style.css') }}>
+        <script type="text/javascript" src={{ url_for('static', filename='reload.js') }}></script>
+        <script type="text/javascript">
+            window.onload = update_feed_status();
+        </script>
     </head>
     <body>
-        <div id="overall">
-            {% if time_diff < 1 %}
-            <h1>The cat was just fed.</h1>
-            {% elif time_diff < 2 %}
-            <h1>The cat was fed 1 hour ago.</2>
-            {% else %}
-            <h1>The cat was fed {{ time_diff | round }} hours ago.</h1>
-            {% endif %}
-
+        <div id="overall">  
+            <h1 id="feed_status"></h1>
             <a href="/record_feed">I fed him again</a>
         </div>
     </body>
