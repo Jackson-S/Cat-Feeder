@@ -10,21 +10,23 @@
 
 h1 {
     font-family: sans-serif;
+    font-weight: normal;
     /* Fallback for browsers not supporting vmax */
-    height: 6em;
+    font-size: 6em;
     font-size: 6vmax;
 }
 
-a {
-    background-color: #A0A0A0;
-    border:1px solid gainsboro;
+.link-button {
+    background-color: whitesmoke;
+    border:1.5px solid orange;
     border-radius:5px;
-    color: #000;
-    margin-right:10px;
-    padding:10px 10px 10px 10px;
+    padding:10px 10px;
     font-family: sans-serif;
     /* Fallback for browsers not supporting vmax */
-    height: 3em;
+    font-size: 3em;
     font-size: 3vmax;
-    text-decoration: none;
+}
+
+.inline {
+    display: inline;
 }

@@ -2,6 +2,11 @@
 <html>
     <head>
         <title>When was he fed?</title>
+        <link rel="icon" type="image/png" href={{ url_for('static', filename='favico.png') }}>
+        <link rel="apple-touch-icon" sizes="180x180" href={{ url_for('static', filename='favico-180.png') }}/>
+        <link rel="apple-touch-icon" sizes="120x120" href={{ url_for('static', filename='favico-120.png') }}/>
+        <link rel="apple-touch-icon" sizes="167x167" href={{ url_for('static', filename='favico-167.png') }}/>
+        <link rel="apple-touch-icon" sizes="152x152" href={{ url_for('static', filename='favico-152.png') }}/>
         <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='style.css') }}>
         <script type="text/javascript" src={{ url_for('static', filename='reload.js') }}></script>
         <script type="text/javascript">
@@ -11,7 +16,11 @@
     <body>
         <div id="overall">  
             <h1 id="feed_status"></h1>
-            <a href="/record_feed">I fed him again</a>
+            <form method="post" action="/record_feed" class="inline">
+                <button type="submit" class="link-button">
+                    I fed him again
+                </button>
+              </form>
         </div>
     </body>
 </html>
