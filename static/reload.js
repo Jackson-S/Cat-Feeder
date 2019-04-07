@@ -21,6 +21,3 @@ function update_feed_status() {
         }
     ).catch(function(err) {feed_status_error(err)});
 }
-
-// Update once per minute
-setInterval(update_feed_status, 1000 * 60);
