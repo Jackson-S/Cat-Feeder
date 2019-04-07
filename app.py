@@ -56,9 +56,6 @@ def generate_subtitle_text(last_feed_time):
     last_datetime_local = datetime.fromisoformat(last_feed_time)
     current_local_time = datetime.utcnow().replace(tzinfo=timezone.utc)
     current_local_time = current_local_time.astimezone(tz=None)
-    print(last_datetime_local)
-    print(current_local_time)
-    print(last_datetime_local.day)
     if last_datetime_local.day == current_local_time.day:
         return "Today at {}".format(
             last_datetime_local.strftime("%I:%M %p"))
