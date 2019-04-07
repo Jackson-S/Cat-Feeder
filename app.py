@@ -38,7 +38,7 @@ def get_check_history():
 
 
 def generate_title_text():
-    last_feed = query.get_feed_from_db()[0][0]
+    last_feed = query.get_last_feed_from_db()[0]
     last_feed_time = datetime.fromisoformat(last_feed)
     # Convert the time difference from seconds to hours
     current_time = datetime.now()
@@ -55,7 +55,7 @@ def generate_title_text():
 
 
 def generate_subtitle_text():
-    last_feed = query.get_feed_from_db()[0][0]
+    last_feed = query.get_last_feed_from_db()[0]
     last_feed_time = datetime.fromisoformat(last_feed)
     current_time = datetime.now()
     
