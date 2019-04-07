@@ -14,12 +14,11 @@
         </script>
     </head>
     <body>
-        <div id="overall">  
+        <div id="floating_div">  
             <h1 id="feed_status"></h1>
-            <form method="post" action="/record_feed" class="inline">
-                <button type="submit" class="link-button">
-                    I fed him again
-                </button>
+            <h2 id="feed_time"></h2>
+            <form method="post" action="/record_feed" id="hidden_form">
+                <button type="submit" id="update_button">I fed him again.</button>
               </form>
         </div>
     </body>
