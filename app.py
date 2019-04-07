@@ -46,7 +46,7 @@ def generate_title_text():
     time_difference_hours = time_difference.total_seconds() / 3600
     
     if time_difference_hours < 1:
-        return "The cat was <i>just</i> fed."
+        return "The cat was just fed."
     elif time_difference_hours < 2:
         return "The cat was fed 1 hour ago."
     else:
