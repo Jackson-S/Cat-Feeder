@@ -70,7 +70,6 @@ def generate_subtitle_text():
 
 @app.route("/get_last_feed_string", methods = ["GET"])
 def get_last_feed_string():
-    last_time = get_last_feed()
     title_text = generate_title_text()
     subtitle_text = generate_subtitle_text()
     return json.dumps({"title": title_text, "subtitle": subtitle_text})
