@@ -1,85 +1,85 @@
-from flask import Flask, request, render_template, redirect
-from datetime import datetime, timezone
+from flask import Flask, render_template, redirect
+from datetime import datetime
 import json
-import sqlite3
+
+import query
 
 app = Flask(__name__)
-database_name = "./cat_feed_times.sql"
 
-def init_database():
-    db = sqlite3.connect(database_name)
-    db.execute("CREATE TABLE IF NOT EXISTS FeedTimes (Time INTEGER)")
-    db.execute("CREATE TABLE IF NOT EXISTS CheckTimes (Time INTEGER)")
-    db.commit()
-    db.close()
-    return "Success."
-
-init_database()
+query.init_database()
 
 @app.route("/record_feed", methods = ["POST"])
 def record_feed():
-    db = sqlite3.connect(database_name)
-    db.execute("INSERT INTO FeedTimes VALUES (datetime('now'))")
-    db.commit()
-    db.close()
+    query.add_feed_to_db()
     return redirect("/")
 
 
 @app.route("/get_last_feed", methods = ["GET"])
 def get_last_feed():
-    db = sqlite3.connect(database_name)
-    # Log this check
-    db.execute("INSERT INTO CheckTimes VALUES (datetime('now'))")
-    # Fetch the last feed time.
-    last_time_query = db.execute("""SELECT datetime(Time, 'localtime') 
-                                    FROM FeedTimes 
-                                    ORDER BY Time DESC""")
-    last_time = last_time_query.fetchone()
-    db.commit()
-    db.close()
-    return last_time[0]
+    query.add_check_to_db()
+    last_feed = query.get_feed_from_db()[0]
+    last_feed_json = json.dumps(last_feed)
+    return last_feed_json
 
 
-def generate_title_text(last_feed_time):
-    last_datetime = datetime.fromisoformat(last_feed_time)
+@app.route("/get_feed_history", methods = ["GET"])
+def get_feed_history():
+    query.add_check_to_db()
+    feed_history = query.get_feed_from_db()
+    feed_history_json = json.dumps(feed_history)
+    return feed_history_json
+
+
+@app.route("/get_check_history", methods = ["GET"])
+def get_check_history():
+    check_history = query.get_check_from_db()
+    check_history_json = json.dumps(check_history)
+    return check_history_json
+
+
+def generate_title_text():
+    last_feed = query.get_feed_from_db()[0][0]
+    last_feed_time = datetime.fromisoformat(last_feed)
     # Convert the time difference from seconds to hours
-    time_diff = (datetime.now() - last_datetime).total_seconds() / 3600
-    if time_diff < 1:
+    current_time = datetime.now()
+    time_difference = current_time - last_feed_time
+    time_difference_hours = time_difference.total_seconds() / 3600
+    
+    if time_difference_hours < 1:
         return "The cat was <i>just</i> fed."
-    elif time_diff < 2:
+    elif time_difference_hours < 2:
         return "The cat was fed 1 hour ago."
     else:
-        return "The cat was fed {} hours ago.".format(int(round(time_diff)))
+        rounded_difference = "{:.0f}".format(round(time_difference_hours))
+        return "The cat was fed {} hours ago.".format(rounded_difference)
 
 
-def generate_subtitle_text(last_feed_time):
-    last_datetime_local = datetime.fromisoformat(last_feed_time)
-    current_local_time = datetime.utcnow().replace(tzinfo=timezone.utc)
-    current_local_time = current_local_time.astimezone(tz=None)
-    if last_datetime_local.day == current_local_time.day:
-        return "Today at {}".format(
-            last_datetime_local.strftime("%I:%M %p"))
-    elif current_local_time.day - 1 == last_datetime_local.day:
-        return "Yesterday at {}".format(
-            last_datetime_local.strftime("%I:%M %p"))
+def generate_subtitle_text():
+    last_feed = query.get_feed_from_db()[0][0]
+    last_feed_time = datetime.fromisoformat(last_feed)
+    current_time = datetime.now()
+    
+    # Selects from two strings, if not in range then prints alternative
+    days = ["Today", "Yesterday"]
+    day_index = abs(last_feed_time.day - current_time.day)
+    if day_index < len(days):
+        return "{} at {}".format(days[day_index], last_feed_time.strftime("%I:%M %p"))
     else:
-        return "{} at {}".format(
-            last_datetime_local.strftime("%x"), 
-            last_datetime_local.strftime("%H:%M"))
+        return last_feed_time.strftime("%a %x at %I:%M %p")
 
 
 @app.route("/get_last_feed_string", methods = ["GET"])
 def get_last_feed_string():
     last_time = get_last_feed()
-    title_text = generate_title_text(last_time)
-    subtitle_text = generate_subtitle_text(last_time)
-    return_objects = {"title": title_text, "subtitle": subtitle_text}
-    return json.dumps(return_objects)
+    title_text = generate_title_text()
+    subtitle_text = generate_subtitle_text()
+    return json.dumps({"title": title_text, "subtitle": subtitle_text})
 
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
