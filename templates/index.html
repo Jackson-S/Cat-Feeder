@@ -8,8 +8,8 @@
         <script type="text/javascript" src={{ url_for('static', filename='reload.js') }}></script>
         <script type="text/javascript">
             window.onload = update_feed_status();
-            // Update once per minute
-            setInterval(update_feed_status, 1000 * 60);
+            // Update once every 5 seconds
+            setInterval(update_feed_status, 1000 * 5);
         </script>
     </head>
     <body>
