@@ -22,7 +22,7 @@ def last_feed():
 def record_feed():
     query.add_feed_to_db()
 
-    r = requests.post(ENDPOINT, json={"time": datetime.utcnow().timestamp() * 1000})
+    r = requests.post(ENDPOINT, json={"time": datetime.now().timestamp() * 1000})
     r.raise_for_status()
 
     return redirect("/")
