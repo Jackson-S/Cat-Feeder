@@ -14,8 +14,7 @@ query.init_database()
 
 
 def last_feed():
-    dt = datetime.fromtimestamp(requests.get(ENDPOINT).json()["time"] / 1000)
-    return dt.replace(tzinfo=timezone.utc).astimezone(tz=None).replace(tzinfo=None)
+    return datetime.fromtimestamp(requests.get(ENDPOINT).json()["time"] / 1000)
 
 
 @app.route("/record_feed", methods=["POST"])
