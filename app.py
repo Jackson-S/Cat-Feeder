@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, jsonify
-from datetime import datetime, timezone
+from datetime import datetime
 import json
 import requests
 
