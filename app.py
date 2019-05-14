@@ -14,14 +14,19 @@ query.init_database()
 
 
 def last_feed():
-    return datetime.fromtimestamp(requests.get(ENDPOINT).json()["time"] / 1000)
+    response = requests.get(ENDPOINT)
+    response.raise_for_status()
+    time = datetime.fromtimestamp(response.json()["time"] / 1000)
+    return time
 
 
 @app.route("/record_feed", methods=["POST"])
 def record_feed():
     query.add_feed_to_db()
 
-    r = requests.post(ENDPOINT, json={"time": datetime.now().timestamp() * 1000})
+    r = requests.post(ENDPOINT, json={
+        "time": datetime.now().timestamp() * 1000
+    })
     r.raise_for_status()
 
     return redirect("/")
@@ -31,7 +36,8 @@ def record_feed():
 def get_last_feed():
     query.add_check_to_db()
     feed = last_feed()
-    return jsonify([feed.isoformat()])
+    feed_json = jsonify([feed.isoformat()])
+    return feed_json
 
 
 @app.route("/get_feed_history", methods=["GET"])
