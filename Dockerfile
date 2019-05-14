@@ -6,7 +6,8 @@ RUN apk add --no-cache \
     dumb-init \
     tzdata
 RUN pip install --no-cache-dir \
-    flask
+    flask \
+    requests
 
 ENV TZ="Australia/Sydney"
 ENV FLASK_APP="app.py"
